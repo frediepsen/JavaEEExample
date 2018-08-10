@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head />
+
+<h:body>
+
+	<h1>Novo Aluno</h1>
+	<h:form id="formularioAluno">
+
+		<h:messages id="msgs" />
+
+		<fieldset>
+
+			<legend>Dados do Aluno</legend>
+
+			<h:panelGrid columns="2">
+
+				<h:outputLabel value="Nome:" for="nome"></h:outputLabel>
+				<h:inputText id="nome" value="#{alunoBean.aluno.nome}"
+					required="true" requiredMessage="Nome é obrigatório"
+					validatorMessage="Nome deve ter entre 2 e 50 caracteres">
+
+					<f:validateLength maximum="50" minimum="2" />
+
+				</h:inputText>
+
+				<h:outputLabel value="Sobrenome:" for="sobrenome"></h:outputLabel>
+				<h:inputText id="sobrenome" value="#{alunoBean.aluno.sobrenome}"
+					validator="#{alunoBean.deveIniciarComS}">
+				</h:inputText>
+
+				<h:outputLabel value="Data de Nascimento:" for="nascimento"></h:outputLabel>
+				<h:inputText id="nascimento"
+					value="#{alunoBean.aluno.dataNascimento.time}">
+					<f:convertDateTime pattern="dd/MM/yyyy"
+						timeZone="America/Sao_Paulo" />
+				</h:inputText>
+
+				<h:outputLabel value="Email:" for="email" />
+				<h:inputText id="email" value="#{alunoBean.aluno.email}">
+					<f:passThroughAttribute name="type" value="email" />
+					<f:passThroughAttribute name="required" value="true" />
+				</h:inputText>
+				
+				<h:outputLabel value="Rg:" for="rg" />
+				<h:inputText id="rg" value="#{alunoBean.aluno.rg}">
+					<f:passThroughAttribute name="type" value="number" />
+					<f:passThroughAttribute name="min" value="1" />
+					<f:passThroughAttribute name="max" value="99999" />
+					<f:passThroughAttribute name="required" value="true" />
+				</h:inputText>
+
+			</h:panelGrid>
+
+		</fieldset>
+
+		<fieldset>
+			<legend>Dados do Curso</legend>
+
+			<h:outputLabel value="Selecione o curso:" for="curso" />
+			<h:selectOneMenu value="#{alunoBean.idCurso}" id="curso">
+				<f:selectItems value="#{alunoBean.cursos}" var="curso"
+					itemLabel="#{curso.nome}" itemValue="#{curso.id}" />
+			</h:selectOneMenu>
+
+			<h:commandButton value="Relacionar Curso"
+				action="#{alunoBean.relacionarCurso}">
+
+			</h:commandButton>
+
+			<br />
+			<h:commandLink value="Novo Curso" action="curso?faces-redirect=true"
+				immediate="true" />
+
+			<h:dataTable value="#{alunoBean.aluno.cursos}" var="curso"
+				id="cursosRelacionados">
+
+				<h:column>
+					<h:outputText value="#{curso.nome}" />
+				</h:column>
+
+				<h:column>
+					<h:commandLink value="X"
+						action="#{alunoBean.removerCursoDoAluno(curso)}">
+					</h:commandLink>
+				</h:column>
+
+			</h:dataTable>
+
+		</fieldset>
+
+		<h:commandButton value="Gravar" action="#{alunoBean.gravar}">
+		</h:commandButton>
+	</h:form>
+
+	<h:form id="formularioTabelaAlunos">
+		<h:dataTable id="listaDeAlunos" value="#{alunoBean.alunos}"
+			var="aluno">
+
+			<h:column>
+				<f:facet name="header">Nome</f:facet>
+				<h:outputText value="#{aluno.nome}" />
+			</h:column>
+
+			<h:column>
+				<f:facet name="header">Sobrenome</f:facet>
+				<h:outputText value="#{aluno.sobrenome}" />
+			</h:column>
+
+			<h:column>
+				<f:facet name="header">Data de Nascimento</f:facet>
+				<h:outputText value="#{aluno.dataNascimento.time}">
+					<f:convertDateTime pattern="dd/MM/yyyy"
+						timeZone="America/Sao_Paulo" />
+				</h:outputText>
+			</h:column>
+
+			<h:column>
+				<f:facet name="header">Remover</f:facet>
+				<h:commandLink value="Remover" action="#{alunoBean.remover(aluno)}">
+				</h:commandLink>
+			</h:column>
+
+			<h:column>
+				<f:facet name="header">Alterar</f:facet>
+				<h:commandLink value="Alterar">
+					<f:setPropertyActionListener value="#{aluno}"
+						target="#{alunoBean.aluno}" />
+				</h:commandLink>
+			</h:column>
+
+		</h:dataTable>
+	</h:form>
+
+</h:body>
+
+</html>
